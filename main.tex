@@ -1,102 +1,89 @@
-\documentclass[a4paper]{article}
-
-%% Language and font encodings
+\documentclass[conference,11pt]{IEEEtran}
+\usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage[utf8x]{inputenc}
-\usepackage[T1]{fontenc}
-
-%% Sets page size and margins
-\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
-
-%% Useful packages
+\usepackage[left=1in,right=1in,top=1in,bottom=1in,footskip=.25in]{geometry}
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{datetime}
 \usepackage{amsmath}
+\usepackage{url}
+\usepackage{subfig}
+\usepackage{float}
 \usepackage{graphicx}
-\usepackage[colorinlistoftodos]{todonotes}
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\graphicspath{ {images/} }
+\usepackage{setspace}
+%\setlength{\parskip}{1em}
+\pagenumbering{arabic}
+\pagestyle{fancy}
 
-\title{Your Paper}
-\author{You}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{beramono}
+\lstset{
+  style              = Matlab-editor,
+  basicstyle         = \mlttfamily,
+  escapechar         = ",
+  mlshowsectionrules = true,
+}
+
+\title{Deep Learning Networks for Automated Lung Cancer Detection}
+\author{
+    \IEEEauthorblockN{Benjamin Hillmann}
+    \IEEEauthorblockA{
+        \today
+    }
+}
 
 \begin{document}
+\onecolumn
 \maketitle
 
 \begin{abstract}
-Your abstract.
+Lung cancer strikes over 225,000 people every year in the United States, summing for \$12 billion in health care costs. In order to correctly diagnose high-risk patients with lung cancer, a non-invasive low-resolution computed tomography (CT) scan is administered. The results of the CT scan are a 3D intensity image of the patients chest region. The important features of this scan are nodules or masses within the lungs, that can be classified as either benign (non-cancerous) or malignant (cancerous). Typically, a radiologist will analyze the scans to determine the diagnosis of the nodules and the patient. With advances in technology, experiments are being conducted with computer-aided diagnosis (CAD) technologies to synergize with human expertise analysis and reduce false positive diagnosis.
 \end{abstract}
 
-\section{Introduction}
+\section{Motivation}
 
-Your introduction goes here! Some examples of commonly used commands and features are listed below, to help you get started. If you have a question, please use the help menu (``?'') on the top bar to search for help or ask us a question. 
+Lung cancer strikes over 225,000 people every year in the United States, summing for \$12 billion in health care costs. In order to correctly diagnose high-risk patients with lung cancer, a non-invasive low-resolution computed tomography (CT) scan is administered. The results of the CT scan are a 3D intensity image of the patients chest region. The important features of this scan are nodules or masses within the lungs, that can be classified as either benign (non-cancerous) or malignant (cancerous). Typically, a radiologist will analyze the scans to determine the diagnosis of the nodules and the patient. With advances in technology, experiments are being conducted with computer-aided diagnosis (CAD) technologies to synergize with human expertise analysis and reduce false positive diagnosis.
 
-\section{Some examples to get started}
+This project aims to develop CAD algorithms to classify lesions in the lung from CT scans as being cancerous. Utilizing state of the art algorithms in computer vision and machine learning, my goal is to reduce the number of false positive diagnosis made by current CAD technology \cite{sun_automatic_2017}. If this approach is successful, it will allow patients to receive quicker access to life-saving intervention, and give radiologists more time to provide that intervention.
 
-\subsection{How to add Comments}
+\section{Problem Definition}
 
-Comments can be added to your project by clicking on the comment icon in the toolbar above. % * <john.hammersley@gmail.com> 2014-09-03T09:54:16.211Z:
-%
-% Here's an example comment!
-%
-To reply to a comment, simply click the reply button in the lower right corner of the comment, and you can close them when you're done.
+The goal for this project is to apply techniques in ongoing machine learning research to correctly predict the risk for a patient to develop lung cancer \cite{ronneberger_u-net:_2015}. The input for the classifiers are 3D intensity scans of the upper chest region of high-risk patients. The output of the classifier is the risk that the patient will develop lung cancer within the next year.
 
-\subsection{How to include Figures}
+\subsection{Dataset}
+The data for this project is being hosted by the data science competition website \href{https://www.kaggle.com/c/data-science-bowl-2017}{Kaggle} as a part of the 2017 Science Bowl. The data includes over a thousand low-dose CT images from patients that are high-risk for lung cancer. The format they are provided in is DICOM, and contains 3D segmented intensity scans of various resolutions. The data is separated into a training, meaning labeled with being cancerous or not, and a test set. The goal is to minimize the log loss of the test set.
 
-First you have to upload the image file from your computer using the upload link the project menu. Then use the includegraphics command to include it in your document. Use the figure environment and the caption command to add a number and a caption to your figure. See the code for Figure \ref{fig:frog} in this section for an example.
+\section{Tentative Solution}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.3\textwidth]{frog.jpg}
-\caption{\label{fig:frog}This frog was uploaded via the project menu.}
-\end{figure}
+My first approach for this problem is inspired by biomedical image segmentation \cite{ronneberger_u-net:_2015}. In the scope of  lung CT scans, the segmentation would be to reduce the full 3D images to only small voxels that contain nodules of interest. These nodules, or masses, are the features used by human annotators to diagnose cancer.  Properties of these voxels, such as size and intensity, would be the input space for a machine learning classifier. An approach for the segmentation problem is to utilize a graph cutting algorithm followed by convolution neural network (CNN) to reduce false positives \cite{sun_automatic_2017}. This processing step would be considered feature extraction. The average intensity, size of the area.
 
-\subsection{How to add Tables}
+Another solution to this problem would be to feed the raw images, with no feature extraction, into a CNN. Literature review would be required to properly tune the architecture of the CNN \cite{litjens_survey_2017}. The main issue I foresee with this approach is the sample size required to properly train a CNN. Usually millions of data points, depending on the space of input features, is required for the CNN to properly learn features. The input space of 3D images is quite large, and having only a thousand training images would be too small. Data augmentation, such as reflecting the images, rotating them, or even generating them from a new distribution could help expand the sample size. Furthermore, data outside the competition is allowed as long is it is available in the public sphere, so I could use the annotated database available at the LIDC-IDRI \cite{armato_lung_2011}.
 
-Use the table and tabular commands for basic tables --- see Table~\ref{tab:widgets}, for example. 
+\section{Scope}
 
-\begin{table}
-\centering
-\begin{tabular}{l|r}
-Item & Quantity \\\hline
-Widgets & 42 \\
-Gadgets & 13
-\end{tabular}
-\caption{\label{tab:widgets}An example table.}
-\end{table}
+The main goal of my project is to utilize cutting edge machine learning algorithms, specifically CNNs, to classify lesions as being cancerous. As such, I will need to find an implementation of the algorithms that run on the machines I have available. In this project, I intend to fine-tune my skills with machine learning, specifically with neural networks, with this project. I also plan to become more engaged with the data science community online, to remain up to date with best practices in the field.
 
-\subsection{How to write Mathematics}
-
-\LaTeX{} is great at typesetting mathematics. Let $X_1, X_2, \ldots, X_n$ be a sequence of independent and identically distributed random variables with $\text{E}[X_i] = \mu$ and $\text{Var}[X_i] = \sigma^2 < \infty$, and let
-\[S_n = \frac{X_1 + X_2 + \cdots + X_n}{n}
-      = \frac{1}{n}\sum_{i}^{n} X_i\]
-denote their mean. Then as $n$ approaches infinity, the random variables $\sqrt{n}(S_n - \mu)$ converge in distribution to a normal $\mathcal{N}(0, \sigma^2)$.
-
-
-\subsection{How to create Sections and Subsections}
-
-Use section and subsections to organize your document. Simply use the section and subsection buttons in the toolbar to create them, and we'll handle all the formatting and numbering automatically.
-
-\subsection{How to add Lists}
-
-You can make lists with automatic numbering \dots
-
-\begin{enumerate}
-\item Like this,
-\item and like this.
-\end{enumerate}
-\dots or bullet points \dots
+The main challenges of the project will be:
 \begin{itemize}
-\item Like this,
-\item and like this.
+  \item Processing input images into a digestible format for the neural network. The data set is quite large (~500GB), so it will be a challenge to just work with it.
+  \item Data augmentation to increase classifier accuracy without over-fitting
+  \item Selecting the best machine learning classifier algorithm and implementation
+  \item Feature extraction on the 3D images
 \end{itemize}
 
-\subsection{How to add Citations and a References List}
+\section{Evaluation Plan}
+The trained machine learning classifiers will be evaluated by a submission to the Kaggle leaderboard. The submissions are evaluated using the training set according to the log loss function below:
 
-You can upload a \verb|.bib| file containing your BibTeX entries, created with JabRef; or import your \href{https://www.overleaf.com/blog/184}{Mendeley}, CiteULike or Zotero library as a \verb|.bib| file. You can then cite entries from it, like this: \cite{greenwade93}. Just remember to specify a bibliography style, as well as the filename of the \verb|.bib|.
+$$ \textrm{LogLoss} = - \frac{1}{n} \sum_{i=1}^n \left[ y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i)\right], $$
 
-You can find a \href{https://www.overleaf.com/help/97-how-to-include-a-bibliography-using-bibtex}{video tutorial here} to learn more about BibTeX.
+%\onecolumn
+%\section{Appendix A}
 
-We hope you find Overleaf useful, and please let us know if you have any feedback using the help menu above --- or use the contact form at \url{https://www.overleaf.com/contact}!
-
-\bibliographystyle{alpha}
-\bibliography{sample}
+\bibliography{myrefs}
+\bibliographystyle{IEEEtran}
 
 \end{document}
+
