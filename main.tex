@@ -121,10 +121,37 @@ After an image is segmented, properties of each individual voxel is regressed to
 
 \subsection{Transfer Learning}
 
-The first few layers of deep neural networks trained on natural images tend to lend themselves to the same phenomena, they learn color blobs and abstract edge filters \cite{yosinski_how_2014}. These features do not limit themselves to particular tasks or datasets and nevertheless are common between many of them. Therefore, when the sample size for a particular dataset is small, it is often the case that these first few layers of a previously learned dataset can be transferred successfully as the initialization weights for a new classification task. The transferability of these edge weights heave been shown to rely on two issues: (1) the specialization of layers to their original task, (2) optimization of co-adapted layers that were split from the original network. Even with these issues, often times the transferability of these weights lends itself to fast stabilization of new classification tasks. The transferability of features also decreases as the difference between the original task and the target task increases. However, even with vastly different original and target tasks, initialization with pre-trained weights is often better than initialization with random weights. Finally, initialization often times provides better classification error than a finely tuned network architecture for a new dataset.
+The first few layers of deep neural networks trained on natural images tend to lend themselves to the same phenomena, they learn color blobs and abstract edge filters \cite{yosinski_how_2014}. These features do not limit themselves to particular tasks or datasets and nevertheless are common between many of them. Therefore, when the sample size for a particular dataset is small, it is often the case that these first few layers of a previously learned dataset can be transferred successfully as the initialization weights for a new classification task. The transferability of these edge weights heave been shown to rely on two issues. The first is the specialization of layers to their original task. The second is the optimization of co-adapted layers that were split from the original network. Even with these issues, often times the transferability of these weights lends itself to fast stabilization of new classification tasks. The transferability of features also decreases as the difference between the original task and the target task increases. However, even with vastly different original and target tasks, initialization with pre-trained weights is often better than initialization with random weights. Finally, initialization often times provides better classification error than a finely tuned network architecture for a new dataset.
 
-\section{Tentative Solution}
+\section{Methods}
 
+In order to determine the risk of a patient developing lung cancer from a CT scan, the features to search for are pulmonary nodules \cite{armato_lung_2011}. A pulmonary nodule is a small mass in the lung.  Finding pulmanory nodules in a CT scan is a difficult task due to the relative size of the nodules compared to the size of the image \cite{vansteenkiste_predicting_nodate}. For context, let us consider the  LUng Node Analysis Grand Challenge (LUNA) \cite{}
+
+One of the key 
+
+The first step of this process involved....
+
+\subsection{Data Normalization}
+
+Accounting for the various zoom factors.
+
+Converting to Hounsfield Units.
+
+Transforming to RGB channels.
+
+Normalizing the histogram.
+
+\subsection{Network Architecture}
+
+Architecture for feature extraction was modeled after the Imagenet50 architecture.
+
+The first network was the pre-trained.
+
+The random network for baseline,
+
+\subesection{Post Processing}
+
+The 2048 abstract features of the output needed to be transformed into a new feature space. The first problem that needed to be solved was xxxxxxxxxxxx.
 Another solution to this problem would be to feed the raw images, with no feature extraction, into a CNN. Literature review would be required to properly tune the architecture of the CNN \cite{litjens_survey_2017}. The main issue I foresee with this approach is the sample size required to properly train a CNN. Usually millions of data points, depending on the space of input features, is required for the CNN to properly learn features. The input space of 3D images is quite large, and having only a thousand training images would be too small. Data augmentation, such as reflecting the images, rotating them, or even generating them from a new distribution could help expand the sample size. Furthermore, data outside the competition is allowed as long is it is available in the public sphere, so I could use the annotated database available at the LIDC-IDRI \cite{armato_lung_2011}.
 
 \section{Scope}
@@ -142,7 +169,9 @@ The main challenges of the project will be:
 \section{Evaluation Plan}
 The trained machine learning classifiers will be evaluated by a submission to the Kaggle leaderboard. The submissions are evaluated using the training set according to the log loss function below:
 
-\section{Discussion}
+\section{Discussion & Future Work}
+
+\section{Conclusion}
 
 The objective of the Science Bowl was to increase the true positive rate of early stage cancer diagnosis from a CT scan. Essentially, the creators of the competition were interested in the ability of artificial intelligence to synergize with human expert knowledge.
 
